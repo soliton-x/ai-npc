@@ -1,6 +1,6 @@
 <div align="center">
 
-# I Know Kung Fu 🥋🤖
+# NPC Playground 🕹️🤖
 
 [![Discord][discord-badge]][discord]
 
