@@ -1,114 +1,91 @@
-# AI NPC World 🌍🎮🤖
+<div align="center">
 
-[Live Demo](https://cu.bzh/demo)
+# NPC Playground 🕹️🤖
 
-[Join our community Discord: AI NPC Devs](https://discord.gg/xyz123)
+[![Discord][discord-badge]][discord]
 
-<img width="1454" alt="AI NPC World Screenshot" src="https://cu.bzh/assets/npc-world.png">
+3D playground to interact with LLM-powered NPCs. </br>
+Modify the `world.lua` file to teach them new skills with a few lines of code.
 
-AI NPC World is a groundbreaking virtual environment where AI NPCs (Non-Player Characters) autonomously interact, adapt, and evolve based on player inputs.
+<img width="1342" alt="cubzh_gigax_hf" src="https://github.com/soliton-x/ai-npc/assets/33256624/e62dd138-c018-4ecf-bc77-a072fadb5c12">
 
-This project is a collaboration between:
-- [Hugging Face](https://huggingface.co/): Pioneers in machine learning tools and resources.
-- [Gigax](https://github.com/GigaxGames): Innovators in AI models for gaming.
-- [Cubzh](https://cu.bzh): A versatile UGC (User-Generated Content) gaming platform.
+[Installation](#Installation)
+[Customization](#Customization)
+[Course](#Course)
+[Credits](#Credits)
 
-## Overview
+</div>
 
-- 💻 [Stack](#stack)
-- 🧠 [Installation](#installation)
-- 🎨 [Customization](#customization)
-- 🚀 [Deployment](#deployment)
-- 🏆 [Credits](#credits)
-
-## Stack
-
-- Game Engine: [Cubzh](https://cu.bzh)
-- AI Models: [Hugging Face](https://huggingface.co/)
-- NPC Behavior Framework: [Gigax](https://github.com/GigaxGames)
-- Scripting: Lua
-- Frontend: Browser-based 3D simulation
-
-## Features
-
-- **Auto-updating AI Behaviors:** NPCs adapt to player interactions dynamically.
-- **Interactive Storytelling:** Players can influence the NPCs and the narrative.
-- **Customizable Parameters:** Modify every aspect of NPC behavior and environment.
-- **Fork & Hack:** Easily fork the project on Hugging Face to create your own worlds.
-- **Voxel Library:** Access a library of 25k voxel items to enhance your game scenes.
 
 ## Installation
 
-**Note**: There is a one-click install option for this project on [Hugging Face](https://huggingface.co/projects/ai-npc-world) for those who want to run it without modification.
+1. Fork the project on [Hugging Face](https://huggingface.co/projects/ai-npc-world).
+2. Modify the [`world.lua`](https://huggingface.co/spaces/cubzh/ai-npcs/blob/main/world.lua) file to edit NPC skills!
+3. Deploy on your own Hugging Face space to run your modified version of the playground.
 
-### 1. Clone the repository and install packages
-
-```bash
-git clone https://github.com/Cubzh/ai-npc-world.git
-cd ai-npc-world
-npm install
-```
-
-### 2. Set up Cubzh
-
-Download and install Cubzh following the instructions on their [website](https://cu.bzh).
-
-### 3. Configure the environment
-
-Create a `.env` file in the root directory and add the necessary environment variables:
-
-```env
-HUGGING_FACE_API_KEY=your_huggingface_api_key
-GIGAX_API_KEY=your_gigax_api_key
-```
-
-### 4. Run the simulation
-
-```bash
-npm run start
-```
-
-You can now access the simulation at http://localhost:3000.
 
 ## Customization
 
-1. **NPC Behavior:** Modify NPC scripts in the `scripts/npc/` directory to change their behavior and skills. Some commented lines in the code can enable new skills.
-
-2. **Environment Design:** Use the voxel library to design unique environments. Add or remove items to fit your game's theme.
-
-3. **Story & Dialogue:** Customize NPC dialogues and storylines by editing the Lua scripts in the `scripts/story/` directory.
-
-4. **Fork & Experiment:** Fork the project on Hugging Face to create your own version of AI NPC World and experiment with different AI models and configurations.
-
-## Deployment
-
-### Deploy to your own server
-
-To deploy the project, follow these steps:
-
-1. **Build the project:**
-
-```bash
-npm run build
+### **Tweaking NPC Behavior**
+Modify the fields defined in `world.lua`'s `NPCs` table in order to influence NPC behaviour:
+```lua
+local NPCs = {    
+  {
+    name = "npcscientist",
+    physicalDescription = "A small sphere with a computer screen for a face",
+    psychologicalProfile = "Designed to be helpful to any human it interacts with, this robot viscerally hates squirrels.",
+    currentLocationName = "Scientist Island",
+    initialReflections = {
+      "This NPC is a robot that punctuates all of its answers with electronic noises - as any android would!",
+      ...
+    },
+  },
+  ...
+}
 ```
+ 
+### **Teaching NPCs new skills** 
+Our NPCs have been trained to use any skill you've defined before running the game. This is achieved by training the LLM powering them to do "function calling". 
 
-2. **Deploy to a server of your choice.** Use platforms like Vercel, Netlify, or any other hosting service to deploy your built project.
+Modify `world.lua`'s `skills` table to give your NPCs new skills :
+```lua
+local skills = {
+	{
+    name = "SAY",
+    description = "Say smthg out loud",
+    parameter_types = {"character", "content"},
+    callback = function(client, action)
+      local npc = client:getNpc(action.character_id)
+      if not npc then print("Can't find npc") return end
+        dialog:create(action.content, npc.avatar)
+      print(string.format("%s: %s", npc.name, action.content))
+    end,
+    action_format_str = "{protagonist_name} said '{content}' to {target_name}"
+  },
+  ...
+}
+```
+The `callback` will be called whenever an NPC uses this skill, using the parameters defined in the `parameters` field. We've given you some examples in `skills.lua`, feel free to draw inspiration from them!  
 
-### Fork & Deploy on Hugging Face
+### [Work in progress] **Environment Design:** 
+The Cubzh game engine allows you to modify the 3D environment of your worlds, by importing community-generated voxel assets or creating new ones yourself. We're working hard to integrate these functionalities into this world - stay tuned!
 
-1. Fork the project on [Hugging Face](https://huggingface.co/projects/ai-npc-world).
-2. Customize the project to suit your needs.
-3. Use the Hugging Face deployment tools to launch your own version.
+## Course
+
+Together with the HuggingFace staff, we've released a new course to teach you how to create your own Lua skills. 
+You can access it [here](https://huggingface.co/huggingface-ml-4-games-course)
 
 ## Credits
 
-- **Hugging Face** for providing powerful machine learning models and tools.
-- **Gigax** for their advanced AI models tailored for gaming.
-- **Cubzh** for the incredible UGC gaming platform and voxel library.
-- **Community Contributors** who helped shape and improve the project.
+- [Hugging Face](https://huggingface.co/) 🤗
+- [Gigax](https://github.com/GigaxGames)
+- [Cubzh](https://cu.bzh): A versatile UGC (User-Generated Content) gaming platform.
+- **You !** You're welcome to fork the repo, share your creations, and create PRs here :)
 
-Join us in revolutionizing the gaming world with AI-powered NPCs. Happy gaming!
 
 ---
 
 For detailed documentation, troubleshooting, and contributing guidelines, please refer to the [wiki](https://github.com/Cubzh/ai-npc-world/wiki).
+
+[discord]: https://discord.gg/rRBSueTKXg
+[discord-badge]: https://img.shields.io/discord/1090190447906934825?color=81A1C1&logo=discord&logoColor=white&style=flat-square
