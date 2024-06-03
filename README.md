@@ -1,6 +1,6 @@
 <div align="center">
 
-# I Know Kung Fu
+# I Know Kung Fu 🥋🤖
 
 [![Discord][discord-badge]][discord]
 
